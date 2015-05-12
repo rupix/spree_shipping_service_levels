@@ -1,4 +1,6 @@
 Spree::StockLocation.class_eval do
-  has_and_belongs_to_many :shipping_service_levels, join_table: "spree_stock_locations_shipping_service_levels"
-  has_and_belongs_to_many :shipping_methods, join_table: "spree_stock_locations_shipping_methods"
+  has_many :shipping_service_level_offerings
+  has_many :shipping_service_levels, through: :shipping_service_level_offerings
+  has_many :shipping_method_offerings
+  has_many :shipping_methods, through: :shipping_method_offerings
 end

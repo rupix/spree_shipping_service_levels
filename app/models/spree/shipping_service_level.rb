@@ -1,6 +1,7 @@
 module Spree
   class ShippingServiceLevel < ActiveRecord::Base
-    has_and_belongs_to_many :stock_locations, join_table: "spree_stock_locations_shipping_service_levels"
+  	has_many :shipping_service_level_offerings
+  	has_many :stock_locations, through: :shipping_service_level_offerings
     has_many :shipping_rates
   end
 end
