@@ -1,5 +1,7 @@
 Spree::Stock::Estimator.class_eval do
 
+  private
+
   # Returns the set of shipping methods that can be used to deliver the given package
   # of items. Takes into account any product shipping restrictions in the package as
   # well as the methods available at the package's stock location
@@ -20,8 +22,16 @@ Spree::Stock::Estimator.class_eval do
     end
   end
 
-  def calculate_shipping_rates(package, ui_filter)
+  
+  def service_levels(package, ui_filter)
     shipping_methods(package, ui_filter).map do |shipping_method|
+      
+    end
+  end
+
+  def calculate_shipping_rates(package, ui_filter)
+    service_levels(package, ui_filter).map do |service_level|
+      shipping_method = service_level.shipping_method
       cost = shipping_method.calculator.compute(package)
       tax_category = shipping_method.tax_category
       if tax_category
