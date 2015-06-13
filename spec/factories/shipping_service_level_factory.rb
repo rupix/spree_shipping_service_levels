@@ -7,10 +7,13 @@ FactoryGirl.define do
     delivery_blackout_dates "12/25"
     delivery_blackout_days "0,6"
     guaranteed true
-    # after(:create) do |shipping_service_level, evaluator|
-    #   stock_location = build(:stock_location_with_processing_info)
-    #   shipping_service_level.stock_locations << stock_location
-    # end
-    # association :stock_location, stock_location {}
+
+    factory :slow_processing_shipping_service_level do
+      processing_days 4
+    end
+
+    factory :super_slow_processing_shipping_service_level do
+      processing_days 10
+    end
   end
 end

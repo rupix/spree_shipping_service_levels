@@ -1,9 +1,10 @@
 module Spree
-  module Package
-    class ShippingRatesBuilder
+  module Shipping
+    class RatesBuilder
       
       def initialize(package)
         @package = package
+        @stock_location = package.stock_location
       end
 
       def shipping_rates
@@ -12,7 +13,7 @@ module Spree
 
       private
 
-      attr_accessor :package
+      attr_accessor :package, :stock_location
 
       def rates_for_service_levels
         service_levels.map do |service_level|
@@ -21,7 +22,7 @@ module Spree
       end
 
       def service_levels
-        package.stock_location.shipping_service_levels
+        stock_location.shipping_service_levels
       end
 
       def cheapest_rate_for_service_level(service_level)
@@ -31,14 +32,14 @@ module Spree
       end
 
       def rates_for_service_level(service_level)
-        viable_calculated_rates.select do |rate|
-          service_level.met_by?(rate)
+        viable_calculated_rates(service_level).select do |rate|
+          rate_tester(service_level, stock_location).passes_with?(rate)
         end
       end
 
-      def viable_calculated_rates
-        viable_shipping_methods.map do |method|
-          method.rate_for(package)
+      def viable_calculated_rates(service_level)
+        viable_shipping_methods.map do |shipping_method|
+          rate_for(shipping_method, service_level)
         end
       end
 
@@ -50,6 +51,15 @@ module Spree
 
       def viable_shipping_method?(method)
         method.can_ship_to?(package.order.ship_address) && method.can_ship?(package)
+      end
+
+      def rate_for(shipping_method, service_level)
+        
+      end
+
+      def rate_tester(service_level, stock_location)
+        @rate_testers ||= {}
+        @rate_testers[service_level] ||= ServiceLevelRateTester.new(service_level, stock_location)
       end
 
     end

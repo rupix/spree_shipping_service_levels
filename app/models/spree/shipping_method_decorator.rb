@@ -11,7 +11,7 @@ Spree::ShippingMethod.class_eval do
   end
 
   def rate_for(package)
-    delivery_window = calculator.estimate_delivery_window(package)
+    delivery_window = calculate_delivery_window(package)
     shipping_rates.new(
       cost: package_cost(package),
       tax_rate: package_tax_rate,
@@ -36,6 +36,10 @@ Spree::ShippingMethod.class_eval do
         rate.zone == order.tax_zone || rate.zone.default_tax?
       end
     end
+  end
+
+  def calculate_delivery_window(package)
+    calculator.estimate_delivery_window(package)
   end
 
 end
