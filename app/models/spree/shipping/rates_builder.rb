@@ -54,13 +54,29 @@ module Spree
       end
 
       def rate_for(shipping_method, service_level)
-        
+        RateBuilder.new(package, shipping_method, ship_time(service_level)).rate
       end
 
-      def rate_tester(service_level, stock_location)
-        @rate_testers ||= {}
-        @rate_testers[service_level] ||= ServiceLevelRateTester.new(service_level, stock_location)
+      def ship_time(service_level)
+        @ship_times ||= {}
+        @ship_times[service_level] ||= calculate_ship_time(service_level)
       end
+
+      def calculate_ship_time(service_level)
+        ShipTimeCalculator.new(
+          Time.now,
+          stock_location.same_day_cutoff_hour,
+          stock_location.latest_daily_ship_hour,
+          service_level.processing_days,
+          stock_location.processing_blackout_days.split(','),
+          stock_location.processing_blackout_dates.split(',')
+        ).ship_time
+      end
+
+      def rate_tester(service_level)
+        @rate_testers ||= {}
+        @rate_testers[service_level] ||= ServiceLevelRateTester.new(service_level, ship_time(service_level))
+      end   
 
     end
   end
