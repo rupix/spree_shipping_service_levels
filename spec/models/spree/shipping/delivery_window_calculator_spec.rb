@@ -37,43 +37,6 @@ module Spree::Shipping
           expect(calculator).to have_received(:estimate_delivery_window).with(package, ship_time)
         end
       end
-
-    end
-
-    context '#ship_time' do
-
-      def custom_window_calculator(order_time)
-        klass.new(package, calculator, service_level, order_time)
-      end
-
-      it 'calculates correctly with an order date that is blacked out' do
-        order_time = DateTime.new(2015,12,25,12,30,00)
-        expect(custom_window_calculator(order_time).ship_time).to eq(DateTime.new(2015,12,28,18,00,00))
-      end
-      it 'calculates correctly with an order time that is not blacked out and created before the cutoff time' do
-        order_time = DateTime.new(2015,6,10,11,30)
-        expect(custom_window_calculator(order_time).ship_time).to eq(DateTime.new(2015,6,10,18,00,00))
-      end
-      it 'calculates correctly with an order date that is not blacked out and created after the cutoff time' do
-        order_time = DateTime.new(2015,6,10,12,30)
-        expect(custom_window_calculator(order_time).ship_time).to eq(DateTime.new(2015,6,11,18,00,00))
-      end
-
-      context 'with slow processing' do
-        let(:service_level){create(:slow_processing_shipping_service_level)}
-        it 'calculates correctly with processing straddling consecutive blacked out days' do
-          order_time = DateTime.new(2015,12,22,11,30)
-          expect(custom_window_calculator(order_time).ship_time).to eq(DateTime.new(2015,12,30,18,00,00))
-        end
-      end
-      
-      context 'with over 9 processing days' do
-        let(:service_level){create(:super_slow_processing_shipping_service_level)}
-        it 'adds the time for both weekends' do
-          order_time = DateTime.new(2015,6,8,11,30)
-          expect(custom_window_calculator(order_time).ship_time).to eq(DateTime.new(2015,6,22,18))
-        end
-      end
     end
 
   end
