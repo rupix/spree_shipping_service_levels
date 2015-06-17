@@ -19,16 +19,18 @@ module Spree::Shipping
     end
     
     context '#rate' do
-      let(:rate){builder.rate}
+      let!(:rate){builder.rate}
       it 'returns an instance of Spree::ShippingRate' do
         expect(rate).to be_instance_of(Spree::ShippingRate)
       end
+      it 'has a delivery window' do
+        expect(rate.delivery_window.start).to eq(delivery_window.start)
+        expect(rate.delivery_window.end).to eq(delivery_window.end)
+      end
       it 'requests the delivery window from the shipping method\'s calculator' do
-        builder.rate
         expect(calculator).to have_received(:estimate_delivery_window).with(package, ship_time)
       end
       it 'requests the cost from the shipping method\'s calculator' do
-        builder.rate
         expect(calculator).to have_received(:compute_package).with(package)
       end
       
