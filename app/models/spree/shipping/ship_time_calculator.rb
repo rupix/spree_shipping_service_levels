@@ -6,14 +6,13 @@ module Spree::Shipping
       same_day_cutoff_hour, 
       latest_daily_ship_hour, 
       processing_days, 
-      blackout_days, 
-      blackout_dates
+      blackout
     )
       @order_time = order_time
       @same_day_cutoff_hour = same_day_cutoff_hour
       @latest_daily_ship_hour = latest_daily_ship_hour
       @processing_days = processing_days
-      @adjuster = TimeAdjuster.new(blackout_days, blackout_dates)
+      @adjuster = TimeAdjuster.new(blackout)
     end
 
     def ship_time

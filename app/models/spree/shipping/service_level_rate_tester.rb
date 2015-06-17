@@ -15,7 +15,7 @@ module Spree::Shipping
     attr_reader :service_level, :rate, :ship_time
 
     def meets_latest_delivery_date_with?(rate)
-      rate.delivery_window_end <= latest_deliver_date
+      rate.delivery_window.end <= latest_deliver_date || (rate && rate.delivery_window && rate.delivery_window.end.nil?)
     end
 
     def latest_deliver_date
@@ -25,10 +25,7 @@ module Spree::Shipping
     end
 
     def delivery_time_adjuster
-      TimeAdjuster.new(
-        service_level.deliver_blackout_days.split(','),
-        service_level.deliver_blackout_dates.split(',')
-      )
+      TimeAdjuster.new(service_level.delivery_blackout)
     end
 
   end

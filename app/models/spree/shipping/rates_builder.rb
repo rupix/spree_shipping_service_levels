@@ -68,8 +68,7 @@ module Spree
           stock_location.same_day_cutoff_hour,
           stock_location.latest_daily_ship_hour,
           service_level.processing_days,
-          stock_location.processing_blackout_days.split(','),
-          stock_location.processing_blackout_dates.split(',')
+          stock_location.processing_blackout
         ).ship_time
       end
 
