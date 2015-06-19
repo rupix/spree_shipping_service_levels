@@ -19,7 +19,7 @@ module Spree::Shipping
 
     private
 
-    attr_reader :package, :shipping_method, :ship_time, :calculator
+    attr_reader :package, :shipping_method, :ship_time
 
     def package_cost
       calculator.compute_package(package)
@@ -40,7 +40,11 @@ module Spree::Shipping
     def delivery_window
       @delivery_window ||= begin
         if calculator.respond_to?(:estimate_delivery_window)
-          calculator.estimate_delivery_window(package, ship_time)
+          range = calculator.estimate_delivery_window(package, ship_time)
+          if range.length == 1
+            range.push(range[0])
+          end
+          DeliveryWindow.new(range[0], range[1])
         else
           DeliveryWindow.new(nil, nil)
         end
