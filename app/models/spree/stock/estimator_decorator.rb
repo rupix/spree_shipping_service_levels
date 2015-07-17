@@ -7,7 +7,7 @@ Spree::Stock::Estimator.class_eval do
   end
 
   def shipping_rates_builder(package)
-    Spree::Shipping::RatesBuilder.new(package).shipping_rates
+    Spree::Shipping::RatesBuilder.new(package)
   end
 
 end
