@@ -13,13 +13,14 @@ module Spree::Shipping
         cost: package_cost,
         tax_rate: tax_rate,
         delivery_window_start: delivery_window.start,
-        delivery_window_end: delivery_window.end
+        delivery_window_end: delivery_window.end,
+        expires_at: expire_time
       )
     end
 
     private
 
-    attr_reader :package, :shipping_method, :ship_time
+    attr_reader :package, :shipping_method, :ship_time, :calculator
 
     def package_cost
       calculator.compute_package(package)
@@ -48,6 +49,16 @@ module Spree::Shipping
         else
           DeliveryWindow.new(nil, nil)
         end
+      end
+    end
+
+    def expire_time
+      return nil if !(expiration_hour = shipping_method.rate_daily_expiration_hour)
+      todays_cutoff = Time.now.beginning_of_day + expiration_hour.hours
+      if Time.now < todays_cutoff
+        todays_cutoff
+      else
+        todays_cutoff + 1.day
       end
     end
   end
