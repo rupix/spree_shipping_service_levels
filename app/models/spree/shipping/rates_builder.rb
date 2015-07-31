@@ -33,7 +33,7 @@ module Spree
 
       def rates_for_service_level(service_level)
         viable_calculated_rates(service_level).select do |rate|
-          rate_tester(service_level, stock_location).passes_with?(rate)
+          rate_tester(service_level).passes_with?(rate)
         end
       end
 

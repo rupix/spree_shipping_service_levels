@@ -15,12 +15,12 @@ module Spree::Shipping
     attr_reader :service_level, :rate, :ship_time
 
     def meets_latest_delivery_date_with?(rate)
-      rate.delivery_window.end <= latest_deliver_date || (rate && rate.delivery_window && rate.delivery_window.end.nil?)
+      (rate && rate.delivery_window && rate.delivery_window.end.nil?) || rate.delivery_window.end <= latest_deliver_date
     end
 
     def latest_deliver_date
       @latest_deliver_date ||= begin
-        delivery_time_adjuster.adjusted_date(ship_time, service_level.max_deliver_days)
+        delivery_time_adjuster.adjusted_date(ship_time, service_level.days_to_deliver_max)
       end
     end
 
