@@ -25,7 +25,7 @@ module Spree::Shipping
       valid_days = 0
       adjusted_days = 0
       current_date = start
-      while valid_days < days
+      while valid_days < days || date_blacked_out?(current_date)
         current_date += 1.day 
         adjusted_days += 1
         if !date_blacked_out?(current_date)

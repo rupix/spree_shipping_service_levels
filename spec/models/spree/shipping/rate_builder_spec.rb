@@ -52,9 +52,10 @@ module Spree::Shipping
         end
       end
 
-      context 'with a shipping method that has no cutoff' do
+      context 'with a shipping method that has no cutoff and stock location with no cutoff' do
         before(:each) do
-          allow(shipping_method).to receive(:rate_daily_expiration_hour).and_return(nil)
+          allow(shipping_method).to receive(:rate_daily_expiration_hour)
+          allow(package.stock_location).to receive(:same_day_cutoff_hour)
         end
         it 'should have no expire time' do
           expect(rate.expires_at).to eq(nil)

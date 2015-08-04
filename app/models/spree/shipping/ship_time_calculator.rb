@@ -31,7 +31,7 @@ module Spree::Shipping
 
     def days_to_ship
       processing_days = @processing_days
-      if after_same_day_cutoff? || order_date_blacked_out?
+      if after_same_day_cutoff? && !order_date_blacked_out?
         processing_days += 1
       end
       adjuster.days_to_adjusted_date(order_time, processing_days)

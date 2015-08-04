@@ -10,6 +10,7 @@ module Spree::Shipping
 
     def rate
       shipping_method.shipping_rates.new(
+        shipment: package.to_shipment,
         cost: package_cost,
         tax_rate: tax_rate,
         delivery_window_start: delivery_window.start,
@@ -53,13 +54,18 @@ module Spree::Shipping
     end
 
     def expire_time
-      return nil if !(expiration_hour = shipping_method.rate_daily_expiration_hour)
+      expiration_hour = shipping_method.rate_daily_expiration_hour || stock_location.same_day_cutoff_hour
+      return nil unless expiration_hour
       todays_cutoff = Time.now.beginning_of_day + expiration_hour.hours
       if Time.now < todays_cutoff
         todays_cutoff
       else
         todays_cutoff + 1.day
       end
+    end
+
+    def stock_location
+      package.stock_location
     end
   end
 end

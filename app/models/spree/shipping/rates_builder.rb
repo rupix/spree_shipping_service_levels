@@ -17,8 +17,13 @@ module Spree
 
       def rates_for_service_levels
         service_levels.map do |service_level|
-          cheapest_rate_for_service_level(service_level)
-        end
+          rate = cheapest_rate_for_service_level(service_level)
+          if rate
+            rate.shipping_service_level = service_level
+            rate.save!
+          end
+          rate
+        end.compact
       end
 
       def service_levels
