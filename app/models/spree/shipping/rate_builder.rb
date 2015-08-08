@@ -10,7 +10,6 @@ module Spree::Shipping
 
     def rate
       shipping_method.shipping_rates.new(
-        shipment: package.to_shipment,
         cost: package_cost,
         tax_rate: tax_rate,
         delivery_window_start: delivery_window.start,

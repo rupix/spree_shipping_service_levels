@@ -82,21 +82,18 @@ module Spree::Shipping
     end
     context '#shipping_rates' do
       let(:rates){builder.shipping_rates}
-      it 'only includes one rate for each service level' do
-        expect(rates.length).to eq(4)
-        for i in 0..3
-          expect(rates[i].shipping_service_level).to eq(service_levels[i])
-        end
+      it 'only includes at most one rate for each service level' do
+        expect(rates.length).to be <= 4
+        assigned_service_levels = rates.map(&:shipping_service_level)
+        expect(assigned_service_levels.uniq.length).to eq(assigned_service_levels.length)
       end
       it 'has the cheapest rate for each service level' do
-        expect(rates[0].shipping_method).to eq(shipping_methods[0])
+        expect(rates[0].shipping_method).to eq(shipping_methods[2])
         expect(rates[1].shipping_method).to eq(shipping_methods[1])
-        expect(rates[2].shipping_method).to eq(shipping_methods[2])
-        expect(rates[3].shipping_method).to eq(shipping_methods[2])
+        expect(rates[2].shipping_method).to eq(shipping_methods[0])
       end
       it 'only has rates for the service levels of the package\'s stock location' do
         rates.each do |rate|
-          expect(rate.shipment.stock_location).to eq(stock_locations[0])
           expect(stock_locations[0].shipping_service_levels).to include(rate.shipping_service_level)
         end
       end
@@ -123,6 +120,10 @@ module Spree::Shipping
         rates.each do |rate|
           expect(rate.shipping_method.can_ship?(package)).to eq(true)
         end
+      end
+      it 'includes no two rates with the same shipping method' do
+        assigned_methods = rates.map(&:shipping_method)
+        expect(assigned_methods.uniq.length).to eq(assigned_methods.length)
       end
     end
 

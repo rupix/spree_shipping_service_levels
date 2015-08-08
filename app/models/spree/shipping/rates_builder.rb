@@ -8,19 +8,28 @@ module Spree
       end
 
       def shipping_rates
-        rates_for_service_levels
+        sorted_unique_rates_for_service_levels
       end
 
       private
 
       attr_accessor :package, :stock_location
 
+      def sorted_unique_rates_for_service_levels
+        sorted_rates_for_service_levels.uniq{|r|r.shipping_method}
+      end
+
+      def sorted_rates_for_service_levels
+        rates_for_service_levels.sort do |rate_a, rate_b|
+          rate_a.shipping_service_level.days_to_deliver_max <=> rate_b.shipping_service_level.days_to_deliver_max
+        end
+      end
+
       def rates_for_service_levels
         service_levels.map do |service_level|
           rate = cheapest_rate_for_service_level(service_level)
           if rate
             rate.shipping_service_level = service_level
-            rate.save!
           end
           rate
         end.compact
