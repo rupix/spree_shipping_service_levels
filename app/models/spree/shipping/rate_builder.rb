@@ -55,8 +55,8 @@ module Spree::Shipping
     def expire_time
       expiration_hour = shipping_method.rate_daily_expiration_hour || stock_location.same_day_cutoff_hour
       return nil unless expiration_hour
-      todays_cutoff = Time.now.beginning_of_day + expiration_hour.hours
-      if Time.now < todays_cutoff
+      todays_cutoff = Time.zone.now.beginning_of_day + expiration_hour.hours
+      if Time.zone.now < todays_cutoff
         todays_cutoff
       else
         todays_cutoff + 1.day
