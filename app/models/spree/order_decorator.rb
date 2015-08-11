@@ -2,6 +2,12 @@ module Spree
   class Order::ShipmentValidationError < StandardError; end
   Order.class_eval do
     state_machines[:state].before_transition to: :complete, do: :ensure_valid_shipments
+
+    alias_method :orig_process_payments!, :process_payments!
+    def process_payments!
+      ensure_valid_shipments
+      orig_process_payments!
+    end
     
     private
 
