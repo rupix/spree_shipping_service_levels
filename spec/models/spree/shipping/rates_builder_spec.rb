@@ -2,6 +2,10 @@ require 'spec_helper'
 
 module Spree::Shipping
   describe RatesBuilder do
+    before(:each) do
+      klass = RatesBuilder
+      klass.send(:public, *klass.private_instance_methods)
+    end
     let(:package){build(:stock_package_with_contents, stock_location: stock_locations[0])}
     let(:builder){build(:shipping_rates_builder, package: package)}
     let(:stock_locations){create_list(:stock_location_with_processing_info, 2)}
@@ -88,9 +92,11 @@ module Spree::Shipping
         expect(assigned_service_levels.uniq.length).to eq(assigned_service_levels.length)
       end
       it 'has the cheapest rate for each service level' do
-        expect(rates[0].shipping_method).to eq(shipping_methods[2])
-        expect(rates[1].shipping_method).to eq(shipping_methods[1])
-        expect(rates[2].shipping_method).to eq(shipping_methods[0])
+        rates.each do |rate|
+          service_level = rate.shipping_service_level
+          cheapest_rate = builder.rates_for_service_level(service_level).min{|a,b|a.cost <=> b.cost}
+          expect(rate.cost).to eq(cheapest_rate.cost)
+        end
       end
       it 'only has rates for the service levels of the package\'s stock location' do
         rates.each do |rate|

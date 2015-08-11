@@ -13,7 +13,7 @@ describe Spree::Order, type: :model do
     end
 
     it 'is called before the transition to complete' do
-      expect(order).to receive(:ensure_valid_shipments)
+      expect(order).to receive(:ensure_valid_shipments).twice
       order.next
     end
     
