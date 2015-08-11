@@ -8,8 +8,6 @@ module Spree
       ensure_valid_shipments
       orig_process_payments!
     end
-    
-    private
 
     def ensure_valid_shipments
       if shipments.any?
