@@ -9,13 +9,14 @@ module Spree::Shipping
     end
 
     def rate
-      shipping_method.shipping_rates.new(
+      rate = shipping_method.shipping_rates.new(
         cost: package_cost,
         tax_rate: tax_rate,
         delivery_window_start: delivery_window.start,
         delivery_window_end: delivery_window.end,
         expires_at: expire_time
       )
+      rate.cost ? rate : nil
     end
 
     private
@@ -40,8 +41,7 @@ module Spree::Shipping
 
     def delivery_window
       @delivery_window ||= begin
-        if calculator.respond_to?(:estimate_delivery_window)
-          range = calculator.estimate_delivery_window(package, ship_time)
+        if calculator.respond_to?(:estimate_delivery_window) && range = calculator.estimate_delivery_window(package, ship_time)
           if range.length == 1
             range.push(range[0])
           end
