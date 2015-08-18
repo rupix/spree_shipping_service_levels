@@ -24,7 +24,7 @@ module Spree::Shipping
     def days_adjusted_for_blackouts(start, days)
       valid_days = 0
       adjusted_days = 0
-      current_date = start
+      current_date = start.clone
       while valid_days < days || date_blacked_out?(current_date)
         current_date += 1.day 
         adjusted_days += 1
