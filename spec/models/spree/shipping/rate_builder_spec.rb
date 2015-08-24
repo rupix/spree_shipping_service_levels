@@ -8,7 +8,7 @@ module Spree::Shipping
     let(:calculator) do
       calculator = double("Calculator")
       allow(calculator).to receive(:estimate_delivery_window).and_return(delivery_window)
-      allow(calculator).to receive(:compute_package)
+      allow(calculator).to receive(:compute_package).and_return(10.5)
       calculator
     end
     let(:delivery_window){DeliveryWindow.new(ship_time + 2.days, ship_time + 3.days)}
@@ -43,7 +43,7 @@ module Spree::Shipping
       context 'with calculator that doesn\'t estimate windows' do
         let(:calculator) do
           calculator = double("Calculator")
-          allow(calculator).to receive(:compute_package)
+          allow(calculator).to receive(:compute_package).and_return(9.2)
           calculator
         end
         it 'has a nil delivery window' do
