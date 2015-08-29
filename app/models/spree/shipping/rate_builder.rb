@@ -12,6 +12,7 @@ module Spree::Shipping
       rate = shipping_method.shipping_rates.new(
         cost: package_cost,
         tax_rate: tax_rate,
+        estimated_ship_time: ship_time,
         delivery_window_start: delivery_window.start,
         delivery_window_end: delivery_window.end,
         expires_at: expire_time

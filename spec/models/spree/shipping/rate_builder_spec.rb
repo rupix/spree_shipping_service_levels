@@ -39,6 +39,9 @@ module Spree::Shipping
       it 'has an expires_at time' do
         expect(rate.expires_at).not_to be_nil
       end
+      it 'has an estimated ship time' do
+        expect(rate.ship_time).to eq(ship_time)
+      end
       
       context 'with calculator that doesn\'t estimate windows' do
         let(:calculator) do
