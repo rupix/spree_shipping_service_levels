@@ -13,5 +13,9 @@ Spree::ShippingMethod.class_eval do
   def rate_daily_expiration_hour
     calculator.respond_to?(:rate_daily_expiration_hour) ? calculator.rate_daily_expiration_hour : nil
   end
+  
+  def guaranteed
+    calculator.guaranteed? || false
+  end
 
 end

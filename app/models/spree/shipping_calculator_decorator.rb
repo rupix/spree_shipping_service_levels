@@ -4,4 +4,8 @@ Spree::ShippingCalculator.class_eval do
   def rate_daily_expiration_hour
     preferred_rate_daily_expiration_hour
   end
+  
+  def guaranteed?
+    false
+  end
 end
