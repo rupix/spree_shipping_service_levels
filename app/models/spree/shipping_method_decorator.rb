@@ -15,7 +15,7 @@ Spree::ShippingMethod.class_eval do
   end
   
   def guaranteed
-    calculator.guaranteed? || false
+    (calculator && calculator.guaranteed?) || false
   end
 
 end
